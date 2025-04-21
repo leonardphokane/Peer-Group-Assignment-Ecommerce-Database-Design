@@ -1,3 +1,5 @@
+-- Create users table
+
 CREATE TABLE `users` (
   `id` integer PRIMARY KEY,
   `avatar` varchar(255),
@@ -11,6 +13,8 @@ CREATE TABLE `users` (
   `created_at` timestamp,
   `deleted_at` timestamp
 );
+
+-- Create addresses table
 
 CREATE TABLE `addresses` (
   `id` integer PRIMARY KEY,
@@ -27,6 +31,8 @@ CREATE TABLE `addresses` (
   `deleted_at` timestamp
 );
 
+-- Create categories table
+
 CREATE TABLE `categories` (
   `id` integer PRIMARY KEY,
   `name` varchar(255),
@@ -34,6 +40,8 @@ CREATE TABLE `categories` (
   `created_at` timestamp,
   `deleted_at` timestamp
 );
+
+-- Create sub_categories table
 
 CREATE TABLE `sub_categories` (
   `id` integer PRIMARY KEY,
@@ -43,6 +51,8 @@ CREATE TABLE `sub_categories` (
   `created_at` timestamp,
   `deleted_at` timestamp
 );
+
+-- Create products table
 
 CREATE TABLE `products` (
   `id` integer PRIMARY KEY,
@@ -55,6 +65,8 @@ CREATE TABLE `products` (
   `deleted_at` timestamp
 );
 
+-- Create product_attributes table
+
 CREATE TABLE `product_attributes` (
   `id` integer PRIMARY KEY,
   `type` ENUM ('color', 'size'),
@@ -62,6 +74,8 @@ CREATE TABLE `product_attributes` (
   `created_at` timestamp,
   `deleted_at` timestamp
 );
+
+-- Create products_skus table
 
 CREATE TABLE `products_skus` (
   `id` integer PRIMARY KEY,
@@ -75,6 +89,8 @@ CREATE TABLE `products_skus` (
   `deleted_at` timestamp
 );
 
+-- Create wishlist table
+
 CREATE TABLE `wishlist` (
   `id` integer PRIMARY KEY,
   `user_id` integer,
@@ -83,6 +99,8 @@ CREATE TABLE `wishlist` (
   `deleted_at` timestamp
 );
 
+-- Create cart table
+
 CREATE TABLE `cart` (
   `id` integer PRIMARY KEY,
   `user_id` integer,
@@ -90,6 +108,10 @@ CREATE TABLE `cart` (
   `created_at` timestamp,
   `updated_at` timestamp
 );
+
+
+-- Create cart_item table
+
 
 CREATE TABLE `cart_item` (
   `id` integer PRIMARY KEY,
@@ -101,6 +123,8 @@ CREATE TABLE `cart_item` (
   `updated_at` timestamp
 );
 
+-- Create order_details table
+
 CREATE TABLE `order_details` (
   `id` integer PRIMARY KEY,
   `user_id` integer,
@@ -109,6 +133,8 @@ CREATE TABLE `order_details` (
   `created_at` timestamp,
   `updated_at` timestamp
 );
+
+-- Create order_item table
 
 CREATE TABLE `order_item` (
   `id` integer PRIMARY KEY,
@@ -120,6 +146,8 @@ CREATE TABLE `order_item` (
   `updated_at` timestamp
 );
 
+-- Create payment_details table
+
 CREATE TABLE `payment_details` (
   `id` integer PRIMARY KEY,
   `order_id` integer,
@@ -130,9 +158,15 @@ CREATE TABLE `payment_details` (
   `updated_at` timestamp
 );
 
+-- ALTER  payment_details table
+
 ALTER TABLE `addresses` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
+-- ALTER  payment_details table
+
 ALTER TABLE `sub_categories` ADD FOREIGN KEY (`parent_id`) REFERENCES `categories` (`id`);
+
+-- Create products_sub_categories table
 
 CREATE TABLE `products_sub_categories` (
   `products_category_id` varchar,
@@ -140,21 +174,31 @@ CREATE TABLE `products_sub_categories` (
   PRIMARY KEY (`products_category_id`, `sub_categories_id`)
 );
 
+-- ALTER TABLE order_details table
+
 ALTER TABLE `products_sub_categories` ADD FOREIGN KEY (`products_category_id`) REFERENCES `products` (`category_id`);
+
+-- ALTER TABLE order_details table
 
 ALTER TABLE `products_sub_categories` ADD FOREIGN KEY (`sub_categories_id`) REFERENCES `sub_categories` (`id`);
 
+-- Create product_attributes_products_skus table
 
-CREATE TABLE `product_attributes_products_skus` (
-  `product_attributes_id` integer,
-  `products_skus_size_attribute_id` integer,
-  PRIMARY KEY (`product_attributes_id`, `products_skus_size_attribute_id`)
+  CREATE TABLE `product_attributes_products_skus` (
+    `product_attributes_id` integer,
+    `products_skus_size_attribute_id` integer,
+     PRIMARY KEY (`product_attributes_id`, `products_skus_size_attribute_id`)
 );
+
+-- ALTER TABLE order_details table
 
 ALTER TABLE `product_attributes_products_skus` ADD FOREIGN KEY (`product_attributes_id`) REFERENCES `product_attributes` (`id`);
 
+-- ALTER TABLE order_details table
+
 ALTER TABLE `product_attributes_products_skus` ADD FOREIGN KEY (`products_skus_size_attribute_id`) REFERENCES `products_skus` (`size_attribute_id`);
 
+-- Create product_attributes_products_skus(1) table
 
 CREATE TABLE `product_attributes_products_skus(1)` (
   `product_attributes_id` integer,
@@ -162,12 +206,19 @@ CREATE TABLE `product_attributes_products_skus(1)` (
   PRIMARY KEY (`product_attributes_id`, `products_skus_color_attribute_id`)
 );
 
+-- ALTER TABLE order_details table
+
 ALTER TABLE `product_attributes_products_skus(1)` ADD FOREIGN KEY (`product_attributes_id`) REFERENCES `product_attributes` (`id`);
+
+-- ALTER TABLE order_details table
 
 ALTER TABLE `product_attributes_products_skus(1)` ADD FOREIGN KEY (`products_skus_color_attribute_id`) REFERENCES `products_skus` (`color_attribute_id`);
 
+-- ALTER TABLE order_details table
 
 ALTER TABLE `products_skus` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
+
+-- Create wishlist_users table
 
 CREATE TABLE `wishlist_users` (
   `wishlist_user_id` integer,
@@ -177,8 +228,11 @@ CREATE TABLE `wishlist_users` (
 
 ALTER TABLE `wishlist_users` ADD FOREIGN KEY (`wishlist_user_id`) REFERENCES `wishlist` (`user_id`);
 
+-- ALTER TABLE order_details table
+
 ALTER TABLE `wishlist_users` ADD FOREIGN KEY (`users_id`) REFERENCES `users` (`id`);
 
+-- Create wishlist_products table
 
 CREATE TABLE `wishlist_products` (
   `wishlist_product_id` integer,
@@ -188,12 +242,19 @@ CREATE TABLE `wishlist_products` (
 
 ALTER TABLE `wishlist_products` ADD FOREIGN KEY (`wishlist_product_id`) REFERENCES `wishlist` (`product_id`);
 
+-- ALTER TABLE order_details table
+
 ALTER TABLE `wishlist_products` ADD FOREIGN KEY (`products_id`) REFERENCES `products` (`id`);
 
+-- ALTER TABLE order_details table
 
 ALTER TABLE `users` ADD FOREIGN KEY (`id`) REFERENCES `cart` (`user_id`);
 
+-- ALTER TABLE order_details table
+
 ALTER TABLE `cart_item` ADD FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`);
+
+-- Create cart_item_products table
 
 CREATE TABLE `cart_item_products` (
   `cart_item_product_id` integer,
@@ -201,10 +262,15 @@ CREATE TABLE `cart_item_products` (
   PRIMARY KEY (`cart_item_product_id`, `products_id`)
 );
 
+-- ALTER TABLE order_details table
+
 ALTER TABLE `cart_item_products` ADD FOREIGN KEY (`cart_item_product_id`) REFERENCES `cart_item` (`product_id`);
+
+-- ALTER TABLE order_details table
 
 ALTER TABLE `cart_item_products` ADD FOREIGN KEY (`products_id`) REFERENCES `products` (`id`);
 
+-- Create cart_item_products_skus table
 
 CREATE TABLE `cart_item_products_skus` (
   `cart_item_products_sku_id` integer,
@@ -212,25 +278,39 @@ CREATE TABLE `cart_item_products_skus` (
   PRIMARY KEY (`cart_item_products_sku_id`, `products_skus_id`)
 );
 
+-- ALTER TABLE order_details table
+
 ALTER TABLE `cart_item_products_skus` ADD FOREIGN KEY (`cart_item_products_sku_id`) REFERENCES `cart_item` (`products_sku_id`);
+
+-- ALTER TABLE order_details table
 
 ALTER TABLE `cart_item_products_skus` ADD FOREIGN KEY (`products_skus_id`) REFERENCES `products_skus` (`id`);
 
+-- ALTER TABLE order_details table
 
 ALTER TABLE `users` ADD FOREIGN KEY (`id`) REFERENCES `order_details` (`user_id`);
 
+-- ALTER TABLE order_details table
+
 ALTER TABLE `order_item` ADD FOREIGN KEY (`order_id`) REFERENCES `order_details` (`id`);
+
+-- Create order_item_products table
 
 CREATE TABLE `order_item_products` (
   `order_item_product_id` integer,
   `products_id` integer,
   PRIMARY KEY (`order_item_product_id`, `products_id`)
 );
+-- ALTER TABLE order_details table
 
 ALTER TABLE `order_item_products` ADD FOREIGN KEY (`order_item_product_id`) REFERENCES `order_item` (`product_id`);
 
+-- ALTER TABLE order_details table
+
 ALTER TABLE `order_item_products` ADD FOREIGN KEY (`products_id`) REFERENCES `products` (`id`);
 
+
+-- Create order_item_products_skus table
 
 CREATE TABLE `order_item_products_skus` (
   `order_item_products_sku_id` integer,
@@ -238,9 +318,14 @@ CREATE TABLE `order_item_products_skus` (
   PRIMARY KEY (`order_item_products_sku_id`, `products_skus_id`)
 );
 
+-- ALTER TABLE order_details table
+
 ALTER TABLE `order_item_products_skus` ADD FOREIGN KEY (`order_item_products_sku_id`) REFERENCES `order_item` (`products_sku_id`);
+
+-- ALTER TABLE order_details table
 
 ALTER TABLE `order_item_products_skus` ADD FOREIGN KEY (`products_skus_id`) REFERENCES `products_skus` (`id`);
 
+-- ALTER TABLE order_details table
 
 ALTER TABLE `order_details` ADD FOREIGN KEY (`id`) REFERENCES `payment_details` (`order_id`);
